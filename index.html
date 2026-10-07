@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="description" content="焼売を蒸し上げる、火加減と湯量の管理シミュレーション">
+  <meta name="theme-color" content="#14110f">
+  <title>焼売蒸籠 — シュウマイ蒸しシミュレーション</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <defs>
+      <radialGradient id="g-skin" cx="42%" cy="38%" r="68%">
+        <stop offset="0%" stop-color="#fff" stop-opacity="0.22"/>
+        <stop offset="60%" stop-color="#000" stop-opacity="0"/>
+        <stop offset="100%" stop-color="#000" stop-opacity="0.28"/>
+      </radialGradient>
+      <radialGradient id="g-meat" cx="40%" cy="35%" r="70%">
+        <stop offset="0%" stop-color="#fff" stop-opacity="0.2"/>
+        <stop offset="55%" stop-color="#000" stop-opacity="0"/>
+        <stop offset="100%" stop-color="#000" stop-opacity="0.32"/>
+      </radialGradient>
+      <radialGradient id="g-pea" cx="35%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#fff" stop-opacity="0.45"/>
+        <stop offset="50%" stop-color="#fff" stop-opacity="0"/>
+        <stop offset="100%" stop-color="#000" stop-opacity="0.35"/>
+      </radialGradient>
+      <radialGradient id="g-shadow" cx="50%" cy="50%" r="50%">
+        <stop offset="70%" stop-color="#000" stop-opacity="0.35"/>
+        <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+  </svg>
+
+  <main id="app">
+    <header class="hud">
+      <div class="hud-item"><span class="label">得点</span><span id="score">0</span></div>
+      <div class="hud-item"><span class="label">残り時間</span><span id="time">90</span></div>
+      <div class="hud-item"><span class="label">残り種</span><span id="stock">24</span></div>
+      <button id="mute" class="mute-btn" type="button" aria-label="音の切り替え">音 入</button>
+    </header>
+
+    <div id="message" class="message" aria-live="polite">種を蒸籠に並べてください</div>
+
+    <section class="steamer-area">
+      <div id="steam-layer" class="steam-layer" aria-hidden="true"></div>
+      <div class="steamer">
+        <div class="steamer-inner">
+          <div id="slots" class="slots"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="meter">
+        <div class="meter-head"><span>釜の温度</span><span><b id="temp">20</b> ℃</span></div>
+        <div class="bar temp-bar"><div id="temp-bar" class="bar-fill"></div><i class="mark" style="left:50%"></i></div>
+      </div>
+      <div class="meter">
+        <div class="meter-head"><span>湯量</span><span><b id="water">100</b> %</span></div>
+        <div class="bar water-bar"><div id="water-bar" class="bar-fill"></div></div>
+      </div>
+    </section>
+
+    <section class="controls">
+      <div class="heat-group" role="group" aria-label="火加減">
+        <button class="heat-btn" type="button" data-heat="0">止める</button>
+        <button class="heat-btn" type="button" data-heat="1">弱火</button>
+        <button class="heat-btn active" type="button" data-heat="2">中火</button>
+        <button class="heat-btn" type="button" data-heat="3">強火</button>
+      </div>
+      <button id="add-water" class="water-btn" type="button">差し水</button>
+    </section>
+
+    <p class="hint">空きの蒸籠をタップして種を入れ、輪の金色の範囲で取り出します。</p>
+
+    <div id="overlay" class="overlay">
+      <div class="dialog">
+        <p class="eyebrow">シュウマイ蒸しシミュレーション</p>
+        <h1>焼売蒸籠</h1>
+        <div id="dialog-body">
+          <ul class="rules">
+            <li>空きの蒸籠をタップして、種を入れます。</li>
+            <li>火加減で釜の温度を保ちます。湯が尽きると空焚きになり、焦げ付きます。</li>
+            <li>各焼売を囲む輪の<b class="gold">金色の範囲</b>で取り出すと、高く評価されます。</li>
+            <li>制限時間と種の数は難易度で変わります。見事な仕上がりが続くと、連続ボーナスが加わります。</li>
+          </ul>
+        </div>
+        <div id="difficulty" class="difficulty">
+          <p class="difficulty-label">難易度</p>
+          <div class="difficulty-group" role="group" aria-label="難易度">
+            <button class="diff-btn" type="button" data-difficulty="easy">易しい</button>
+            <button class="diff-btn active" type="button" data-difficulty="normal">普通</button>
+            <button class="diff-btn" type="button" data-difficulty="hard">厳しい</button>
+          </div>
+          <p id="difficulty-note" class="difficulty-note"></p>
+        </div>
+        <button id="start" class="start-btn" type="button">始める</button>
+        <p class="best">最高得点 <span id="best">0</span></p>
+      </div>
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
