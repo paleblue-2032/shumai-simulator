@@ -549,7 +549,7 @@
 
   /* ---------- Events ---------- */
   function renderMute() {
-    el.mute.textContent = state.muted ? '音 切' : '音 入';
+    el.mute.textContent = state.muted ? 'OFF' : 'ON';
   }
 
   el.heatBtns.forEach((b) =>

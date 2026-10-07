@@ -4,11 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
   <meta name="description" content="焼売を蒸し上げる、火加減と湯量の管理シミュレーション">
-  <meta name="theme-color" content="#14110f">
-  <title>焼売蒸籠 — シュウマイ蒸しシミュレーション</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+  <meta name="theme-color" content="#141017">
+  <title>焼売蒸籠</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -37,11 +34,13 @@
   </svg>
 
   <main id="app">
+    <a class="back" href="../">← others</a>
+
     <header class="hud">
       <div class="hud-item"><span class="label">得点</span><span id="score">0</span></div>
       <div class="hud-item"><span class="label">残り時間</span><span id="time">90</span></div>
       <div class="hud-item"><span class="label">残り種</span><span id="stock">24</span></div>
-      <button id="mute" class="mute-btn" type="button" aria-label="音の切り替え">音 入</button>
+      <button id="mute" class="mute-btn" type="button" aria-label="音の切り替え">ON</button>
     </header>
 
     <div id="message" class="message" aria-live="polite">種を蒸籠に並べてください</div>
