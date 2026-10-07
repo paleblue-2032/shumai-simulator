@@ -79,13 +79,18 @@ button {
 .hud-item.warn span:last-child { color: #e0735a; }
 .mute-btn {
   width: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid var(--line);
   border-radius: 4px;
   background: var(--panel);
-  font-size: 12px;
-  letter-spacing: 0.02em;
   color: var(--muted);
 }
+.mute-btn svg { width: 20px; height: 20px; }
+.mute-btn .ic-off { display: none; }
+.mute-btn.muted .ic-on { display: none; }
+.mute-btn.muted .ic-off { display: block; }
 
 /* Message */
 .message {

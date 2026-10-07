@@ -549,7 +549,7 @@
 
   /* ---------- Events ---------- */
   function renderMute() {
-    el.mute.textContent = state.muted ? 'OFF' : 'ON';
+    el.mute.classList.toggle('muted', state.muted);
   }
 
   el.heatBtns.forEach((b) =>
