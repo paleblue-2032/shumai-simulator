@@ -17,68 +17,65 @@
   const DIFFICULTIES = {
     easy: {
       label: '易しい',
-      note: '制限時間100秒。火力が効きやすく、湯も減りにくい。蒸し加減のばらつきは小さめ。',
-      stock: 20,
-      duration: 100,
-      tempRate: 0.5,
-      baseCookPerSec: 1 / 17,
-      zoneStart: 0.5,
-      zoneEnd: 0.82,
-      cookSpeedMin: 0.88,
-      cookSpeedMax: 1.12,
-      waterDrainPerSec: 1.2,
-      waterRefill: 50,
-      waterCooldown: 2,
+      note: '制限時間95秒。火力が効きやすく、湯も減りにくい。加熱は速めで、蒸し加減のばらつきは小さめ。',
+      duration: 95,
+      tempRate: 0.44,
+      baseCookPerSec: 1 / 15.5,
+      zoneStart: 0.52,
+      zoneEnd: 0.78,
+      cookSpeedMin: 0.86,
+      cookSpeedMax: 1.16,
+      waterDrainPerSec: 1.5,
+      waterRefill: 45,
+      waterCooldown: 3,
       ranks: [
-        { min: 2200, label: '名人' },
-        { min: 1500, label: '熟練' },
-        { min: 900, label: '一人前' },
-        { min: 450, label: '見習い' },
-        { min: 0, label: '修行中' },
+        { perfect: 42, quality: 0.8, label: '名人' },
+        { perfect: 30, quality: 0.65, label: '熟練' },
+        { perfect: 19, label: '一人前' },
+        { perfect: 9, label: '見習い' },
+        { perfect: 0, label: '修行中' },
       ],
     },
     normal: {
       label: '普通',
-      note: '制限時間90秒。蒸し上がりは速く、一個ごとに早さがばらつく。',
-      stock: 24,
-      duration: 90,
-      tempRate: 0.32,
-      baseCookPerSec: 1 / 14,
-      zoneStart: 0.57,
-      zoneEnd: 0.76,
-      cookSpeedMin: 0.78,
-      cookSpeedMax: 1.24,
-      waterDrainPerSec: 1.7,
-      waterRefill: 40,
-      waterCooldown: 3,
+      note: '制限時間85秒。加熱が速く、一個ごとに早さがばらつく。湯の減りも早い。',
+      duration: 85,
+      tempRate: 0.28,
+      baseCookPerSec: 1 / 12.5,
+      zoneStart: 0.58,
+      zoneEnd: 0.74,
+      cookSpeedMin: 0.74,
+      cookSpeedMax: 1.28,
+      waterDrainPerSec: 2.0,
+      waterRefill: 34,
+      waterCooldown: 3.5,
       ranks: [
-        { min: 3000, label: '名人' },
-        { min: 2000, label: '熟練' },
-        { min: 1200, label: '一人前' },
-        { min: 600, label: '見習い' },
-        { min: 0, label: '修行中' },
+        { perfect: 36, quality: 0.8, label: '名人' },
+        { perfect: 26, quality: 0.65, label: '熟練' },
+        { perfect: 16, label: '一人前' },
+        { perfect: 8, label: '見習い' },
+        { perfect: 0, label: '修行中' },
       ],
     },
     hard: {
       label: '厳しい',
-      note: '制限時間80秒。蒸し上がりは速く、ばらつきも大きい。湯の減りも早い。',
-      stock: 28,
-      duration: 80,
-      tempRate: 0.26,
-      baseCookPerSec: 1 / 11.5,
+      note: '制限時間78秒。加熱が速く、ばらつきも大きい。金色の範囲は狭く、湯の減りは早い。',
+      duration: 78,
+      tempRate: 0.22,
+      baseCookPerSec: 1 / 10,
       zoneStart: 0.6,
-      zoneEnd: 0.73,
-      cookSpeedMin: 0.7,
-      cookSpeedMax: 1.32,
-      waterDrainPerSec: 2.1,
-      waterRefill: 32,
-      waterCooldown: 4,
+      zoneEnd: 0.715,
+      cookSpeedMin: 0.66,
+      cookSpeedMax: 1.36,
+      waterDrainPerSec: 2.5,
+      waterRefill: 28,
+      waterCooldown: 4.5,
       ranks: [
-        { min: 3600, label: '名人' },
-        { min: 2400, label: '熟練' },
-        { min: 1500, label: '一人前' },
-        { min: 700, label: '見習い' },
-        { min: 0, label: '修行中' },
+        { perfect: 30, quality: 0.8, label: '名人' },
+        { perfect: 22, quality: 0.65, label: '熟練' },
+        { perfect: 13, label: '一人前' },
+        { perfect: 6, label: '見習い' },
+        { perfect: 0, label: '修行中' },
       ],
     },
   };
@@ -89,7 +86,6 @@
   const el = {
     score: $('score'),
     time: $('time'),
-    stock: $('stock'),
     timeBox: $('time').parentElement,
     message: $('message'),
     slots: $('slots'),
@@ -131,7 +127,6 @@
     running: false,
     score: 0,
     timeLeft: CONFIG.duration,
-    stock: CONFIG.stock,
     temp: CONFIG.ambientTemp,
     water: 100,
     heat: 2,
@@ -288,11 +283,6 @@
     if (!state.running) return;
     const slot = state.slots[i];
     if (!slot.item) {
-      if (state.stock <= 0) {
-        setMessage('種がもうありません', 'bad');
-        return;
-      }
-      state.stock--;
       slot.item = { progress: 0, speed: rand(CONFIG.cookSpeedMin, CONFIG.cookSpeedMax) };
       slot.el.innerHTML = shumaiMarkup();
       slot.svg = slot.el.querySelector('.shumai-svg');
@@ -364,7 +354,6 @@
     el.difficultyNote.textContent = DIFFICULTIES[key].note;
     if (!state.running) {
       state.timeLeft = DIFFICULTIES[key].duration;
-      state.stock = DIFFICULTIES[key].stock;
       renderHud();
     }
     if (persist) storage.set('shumai-difficulty', key);
@@ -386,7 +375,6 @@
       running: true,
       score: 0,
       timeLeft: CONFIG.duration,
-      stock: CONFIG.stock,
       temp: CONFIG.ambientTemp,
       water: 100,
       waterCd: 0,
@@ -405,8 +393,7 @@
 
   function checkEnd() {
     if (!state.running) return;
-    const empty = state.slots.every((s) => !s.item);
-    if (state.timeLeft <= 0 || (state.stock <= 0 && empty)) endGame();
+    if (state.timeLeft <= 0) endGame();
   }
 
   function endGame() {
@@ -417,14 +404,19 @@
       state.best = state.score;
       storage.set('shumai-best', state.best);
     }
-    const rank = CONFIG.ranks.find((r) => state.score >= r.min).label;
     const s = state.stats;
+    const served = s.perfect + s.over + s.raw + s.burnt;
+    const quality = served > 0 ? s.perfect / served : 0;
+    const rank = CONFIG.ranks.find(
+      (r) => s.perfect >= r.perfect && (r.quality == null || quality >= r.quality)
+    ).label;
     el.dialogBody.innerHTML =
       '<div class="result">' +
       '<p class="result-label">本日の評価</p>' +
       `<p class="result-rank">${rank}</p>` +
+      `<p class="result-yield">見事な蒸し上がり <b>${s.perfect}</b> 個</p>` +
       `<p class="result-score">${state.score}<small>点</small>${isBest ? '<span class="result-new">最高得点更新</span>' : ''}</p>` +
-      `<p class="result-stats">難易度 ${DIFFICULTIES[state.difficulty].label}<br>見事 ${s.perfect}　蒸しすぎ ${s.over}　生焼け ${s.raw}　焦げ ${s.burnt}<br>最大連続 ${s.maxCombo}</p>` +
+      `<p class="result-stats">難易度 ${DIFFICULTIES[state.difficulty].label}<br>成功率 ${Math.round(quality * 100)}%　蒸しすぎ ${s.over}　生焼け ${s.raw}　焦げ ${s.burnt}<br>最大連続 ${s.maxCombo}</p>` +
       '</div>';
     el.start.textContent = 'もう一度';
     el.best.textContent = state.best;
@@ -527,7 +519,6 @@
     el.score.textContent = state.score;
     el.time.textContent = Math.ceil(state.timeLeft);
     el.timeBox.classList.toggle('warn', state.timeLeft <= 10);
-    el.stock.textContent = state.stock;
     el.temp.textContent = Math.round(state.temp);
     el.tempBar.style.width = Math.min(100, (state.temp / CONFIG.maxTemp) * 100) + '%';
     el.water.textContent = Math.round(state.water);
